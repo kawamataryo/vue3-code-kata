@@ -1,15 +1,15 @@
 let activeEffect: Function | null = null;
 
-export const effect = (fun: Function): void => {
+export function effect(fun: Function): void {
   activeEffect = fun;
   fun();
-};
+}
 
 type Deps = Set<Function>;
 
 const targetMap = new WeakMap<object, Deps>();
 
-export const track = (target: object): void => {
+export function track(target: object): void {
   let deps = targetMap.get(target);
 
   if (deps === undefined) {
@@ -20,9 +20,9 @@ export const track = (target: object): void => {
   if (activeEffect && !deps.has(activeEffect)) {
     deps.add(activeEffect);
   }
-};
+}
 
-export const trigger = (target: object): void => {
+export function trigger(target: object): void {
   const deps = targetMap.get(target);
 
   if (deps === undefined) {
@@ -32,4 +32,4 @@ export const trigger = (target: object): void => {
   deps.forEach(effect => {
     effect();
   });
-};
+}

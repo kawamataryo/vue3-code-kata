@@ -1,6 +1,6 @@
 import { track, trigger } from "./effect";
 
-export const ref = (val: any) => {
+export function ref(val: any): { value: any } {
   return {
     get value() {
       track(ref);
@@ -11,4 +11,4 @@ export const ref = (val: any) => {
       trigger(ref);
     }
   };
-};
+}
