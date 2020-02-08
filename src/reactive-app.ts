@@ -1,6 +1,6 @@
-import { ref } from "./src/ref";
-import { computed } from "./src/computed";
-import { effect } from "./src/effect";
+import { ref } from "./reactive/ref";
+import { computed } from "./reactive/computed";
+import { effect } from "./reactive/effect";
 
 document.addEventListener("DOMContentLoaded", () => {
   const count = ref(0);
@@ -12,14 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const decrementButton = document.getElementById("decrement");
 
   effect(() => {
-    countElement.innerText = String(count.value);
-    multipliedElement.innerText = String(multiplied.value);
+    countElement!.innerText = String(count.value);
+    multipliedElement!.innerText = String(multiplied.value);
   });
 
-  incrementButton.addEventListener("click", () => {
+  incrementButton!.addEventListener("click", () => {
     count.value++;
   });
-  decrementButton.addEventListener("click", () => {
+  decrementButton!.addEventListener("click", () => {
     count.value--;
   });
 });

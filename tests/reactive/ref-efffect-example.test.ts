@@ -1,5 +1,5 @@
-import { ref } from "../src/ref";
-import { effect } from "../src/effect";
+import { ref } from "../../src/reactive/ref";
+import { effect } from "../../src/reactive/effect";
 
 describe("ref and effect", () => {
   test("ref and effect", () => {

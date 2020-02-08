@@ -1,5 +1,5 @@
-import { ref } from "../src/ref";
-import { computed } from "../src/computed";
+import { ref } from "../../src/reactive/ref";
+import { computed } from "../../src/reactive/computed";
 
 describe("computed", () => {
   test("observe", () => {
