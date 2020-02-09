@@ -91,3 +91,87 @@ function hasChanged(a: NodeType, b: NodeType): ChangeType {
 
   return ChangeType.None;
 }
+
+// 仮想DMOの差分を検知し、リアルDOMに反映する
+
+function updateValue(target: HTMLInputElement, newValue: string) {
+  target.value = newValue;
+}
+
+function updateAttributes(
+  target: HTMLElement,
+  oldAttrs: Attributes,
+  newAttrs: Attributes
+): void {
+  // remove attrs
+  for (const attr in oldAttrs) {
+    if (!isEventAttr(attr)) {
+      target.removeAttribute(attr);
+    }
+  }
+
+  // set attrs
+  for (const attr in newAttrs) {
+    if (!isEventAttr(attr)) {
+      target.setAttribute(attr, newAttrs[attr] as string);
+    }
+  }
+}
+
+export function updateElement(
+  parent: HTMLElement,
+  oldNode: NodeType,
+  newNode: NodeType,
+  index = 0
+) {
+  // 古いノードがなかったら新しいノードを追加する
+  if (!oldNode) {
+    parent.appendChild(createElement(newNode));
+  }
+
+  const target = parent.childNodes[index];
+
+  // 新しいノードがなかったらノードを削除する
+  if (!newNode) {
+    parent.removeChild(target);
+    return;
+  }
+
+  // 両方ある場合は差分を検知し、バッチ処理を行う
+  const changeType = hasChanged(oldNode, newNode);
+  switch (changeType) {
+    case ChangeType.Type:
+    case ChangeType.Text:
+    case ChangeType.Node:
+      parent.replaceChild(createElement(newNode), target);
+      return;
+    case ChangeType.Value:
+      updateValue(
+        target as HTMLInputElement,
+        (newNode as VNode).attributes.value as string
+      );
+      return;
+    case ChangeType.Attr:
+      updateAttributes(
+        target as HTMLElement,
+        (oldNode as VNode).attributes,
+        (newNode as VNode).attributes
+      );
+      return;
+  }
+
+  if (isVNode(oldNode) && isVNode(newNode)) {
+    for (
+      let i = 0;
+      i < newNode.children.length || i < oldNode.children.length;
+      i++
+    ) {
+      updateElement(
+        target as HTMLElement,
+        oldNode.children[i],
+        newNode.children[i],
+        i
+      );
+    }
+  }
+}
