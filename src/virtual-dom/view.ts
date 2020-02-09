@@ -20,15 +20,18 @@ export function h(
   return { nodeName, attributes, children };
 }
 
+// 仮想DOMかの判定
 function isVNode(node: NodeType): node is VNode {
   return typeof node !== "string" && typeof node !== "number";
 }
 
+// イベントAttrかどうかの判定
 function isEventAttr(attr: string): boolean {
   // onから始まる属性名はイベントとして扱う
   return /^on/.test(attr);
 }
 
+// Attrのセット。イベントの場合はaddEventListenerをセットする
 function setAttributes(target: HTMLElement, attrs: Attributes): void {
   for (const attr in attrs) {
     if (isEventAttr(attr)) {
@@ -39,7 +42,6 @@ function setAttributes(target: HTMLElement, attrs: Attributes): void {
     }
   }
 }
-
 
 // リアルDOMを生成する
 export function createElement(node: NodeType): HTMLElement | Text {
@@ -52,4 +54,40 @@ export function createElement(node: NodeType): HTMLElement | Text {
   node.children.forEach(child => el.appendChild(createElement(child)));
 
   return el;
+}
+
+enum ChangeType {
+  None,
+  Type,
+  Text,
+  Node,
+  Value,
+  Attr
+}
+
+// 仮想DOMの差分検知
+function hasChanged(a: NodeType, b: NodeType): ChangeType {
+  if (typeof a !== typeof b) {
+    return ChangeType.Type;
+  }
+
+  if (!isVNode(a) && a !== b) {
+    return ChangeType.Text;
+  }
+
+  if (isVNode(a) && isVNode(b)) {
+    if (a.nodeName !== b.nodeName) {
+      return ChangeType.Node;
+    }
+
+    if (a.attributes.value !== b.attributes.value) {
+      return ChangeType.Value;
+    }
+
+    if (JSON.stringify(a.attributes) !== JSON.stringify(b.attributes)) {
+      return ChangeType.Attr;
+    }
+  }
+
+  return ChangeType.None;
 }
