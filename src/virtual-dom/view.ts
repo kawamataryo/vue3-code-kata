@@ -2,6 +2,7 @@ type NodeType = VNode | string | number;
 type Attributes = { [key: string]: string | Function };
 
 export interface View<State, Actions> {
+  // TODO:: よくわからん()が、weakMap？
   (state: State, actions: Actions): VNode;
 }
 
