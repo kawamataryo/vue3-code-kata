@@ -1,11 +1,20 @@
 type NodeType = VNode | string | number;
 type Attributes = { [key: string]: string | Function };
 
+/* -----------------------------------------
+Viewでやっていること
+- 仮想DOMを作る関数の定義 #h
+- 仮想DOMを受け取ってリアルDOMを作る関数の定義 #createElement
+- 仮想DOMの差分を検知する関数の定義 #hasChanged
+- DOMの更新をする関数の定義 #updateElement
+----------------------------------------- */
+
 export interface View<State, Actions> {
-  // TODO:: よくわからん()が、map？
+  // TODO:: よくわからん()が、map？関数ぽいな。2つの引数を受け取ってVNodeを返す
   (state: State, actions: Actions): VNode;
 }
 
+// 仮想DOMの型
 export interface VNode {
   nodeName: keyof HTMLElementTagNameMap;
   attributes: Attributes;

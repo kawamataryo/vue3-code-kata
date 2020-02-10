@@ -1,6 +1,12 @@
 import { ActionTree } from "./action";
 import { View, VNode, createElement, updateElement } from "./view";
 
+/* -----------------------------------------
+appでやっていること
+- エントリーポイントとなるアプリの型定義
+- actionの発行管理。stateを変更してアクションを実行する際に仮想DOM更新、リアルDOM更新を実行する
+----------------------------------------- */
+
 interface AppConstructor<State, Actions> {
   // 親ノード
   el: HTMLElement | string;
@@ -61,6 +67,7 @@ export class App<State, Actions> {
     }
   }
 
+  // リアルDOMを作成、置き換える
   private render(): void {
     if (this.oldNode) {
       updateElement(this.el, this.oldNode, this.newNode as VNode);

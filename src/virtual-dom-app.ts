@@ -2,6 +2,12 @@ import { ActionTree } from "./virtual-dom/action";
 import { h, View } from "./virtual-dom/view";
 import { App } from "./virtual-dom/app";
 
+/*---------
+appでやっていること
+仮想DOMの定義
+actionの設定
+stateの設定
+----------*/
 const state = {
   tasks: ["virtual dom", "完全に理解した"],
   form: {
